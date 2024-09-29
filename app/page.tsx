@@ -156,7 +156,11 @@ export default function Home() {
           disabled={isPending || isPlaying}
           aria-label="Submit"
         >
-          {isPending ? <LoadingIcon /> : isPlaying ? "PAUSE" : <EnterIcon />}
+          {isPending ? (
+            <LoadingIcon />
+          ) : isPlaying ? null : ( // "PAUSE" remove null and uncomment this PAUSE string to see when the assistant is speaking - could replace with a pause / stop button
+            <EnterIcon />
+          )}
         </button>
       </form>
 
