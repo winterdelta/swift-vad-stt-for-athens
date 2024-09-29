@@ -1,3 +1,17 @@
+`w∆` | Winterdelta
+
+
+## Updates in this repo to `ai-ng / swift` 
+
+- `voice-ai` / `swift` is now uninterruptible:
+  - If the `ai` has started speaking, it will continue until it has finished speaking.
+  - Aids `conversational-fluency` a little.
+  - The overall `conversational-experience` should be less 'jittery' - e.g. if there is ambient background noise, it won't unexpectedly stop or start speaking.
+  - Easier to listen to, basically, and easier to chat with, overall.
+
+
+
+
 # [Swift](https://swift-ai.vercel.app)
 
 Swift is a fast AI voice assistant.
