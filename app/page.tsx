@@ -7,6 +7,7 @@ import { EnterIcon, LoadingIcon } from "@/lib/icons";
 import { usePlayer } from "@/lib/usePlayer";
 import { track } from "@vercel/analytics";
 import { useMicVAD, utils } from "@ricky0123/vad-react";
+import { AudioLines, CirclePauseIcon } from "lucide-react";
 
 type Message = {
   role: "user" | "assistant";
@@ -17,11 +18,14 @@ type Message = {
 export default function Home() {
   const [input, setInput] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const [voiceMode, setVoiceMode] = useState(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const player = usePlayer();
 
   const vad = useMicVAD({
-    startOnLoad: true,
+    startOnLoad: false, // set to false prevents the mic auto-start
     onSpeechEnd: (audio) => {
       if (isPlaying) return;
       player.stop();
@@ -61,6 +65,14 @@ export default function Home() {
     window.addEventListener("keydown", keyDown);
     return () => window.removeEventListener("keydown", keyDown);
   });
+
+  useEffect(() => {
+    if (voiceMode) {
+      vad.start();
+    } else {
+      vad.pause();
+    }
+  }, [voiceMode]);
 
   const [messages, submit, isPending] = useActionState<
     Array<Message>,
@@ -127,6 +139,7 @@ export default function Home() {
 
   function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setVoiceMode(true);
     if (!isPlaying) {
       submit(input);
     }
@@ -136,33 +149,35 @@ export default function Home() {
     <>
       <div className="pb-4 min-h-28" />
 
-      <form
-        className="rounded-full bg-neutral-200/80 dark:bg-neutral-800/80 flex items-center w-full max-w-3xl border border-transparent hover:border-neutral-300 focus-within:border-neutral-400 hover:focus-within:border-neutral-400 dark:hover:border-neutral-700 dark:focus-within:border-neutral-600 dark:hover:focus-within:border-neutral-600"
-        onSubmit={handleFormSubmit}
-      >
-        <input
-          type="text"
-          className="bg-transparent focus:outline-none p-4 w-full placeholder:text-neutral-600 dark:placeholder:text-neutral-400"
-          required
-          placeholder="Ask me anything"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          ref={inputRef}
-        />
-
-        <button
-          type="submit"
-          className="p-4 text-neutral-700 hover:text-black dark:text-neutral-300 dark:hover:text-white"
-          disabled={isPending || isPlaying}
-          aria-label="Submit"
+      {
+        <form
+          className="rounded-full bg-neutral-200/80 dark:bg-neutral-800/80 flex items-center w-full max-w-3xl border border-transparent hover:border-neutral-300 focus-within:border-neutral-400 hover:focus-within:border-neutral-400 dark:hover:border-neutral-700 dark:focus-within:border-neutral-600 dark:hover:focus-within:border-neutral-600"
+          onSubmit={handleFormSubmit}
         >
-          {isPending ? (
-            <LoadingIcon />
-          ) : isPlaying ? null : ( // "PAUSE" remove null and uncomment this PAUSE string to see when the assistant is speaking - could replace with a pause / stop button
-            <EnterIcon />
-          )}
-        </button>
-      </form>
+          <input
+            type="text"
+            className="bg-transparent focus:outline-none p-4 w-full placeholder:text-neutral-600 dark:placeholder:text-neutral-400"
+            required
+            placeholder="Ask me anything"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            ref={inputRef}
+          />
+
+          <button
+            type="submit"
+            className="p-4 text-neutral-700 hover:text-black dark:text-neutral-300 dark:hover:text-white"
+            disabled={isPending || isPlaying}
+            aria-label="Submit"
+          >
+            {isPending ? (
+              <LoadingIcon />
+            ) : isPlaying ? null : ( // "PAUSE" remove null and uncomment this PAUSE string to see when the assistant is speaking - could replace with a pause / stop button
+              <EnterIcon />
+            )}
+          </button>
+        </form>
+      }
 
       <div className="text-neutral-400 dark:text-neutral-600 pt-4 text-center max-w-xl text-balance min-h-28 space-y-4">
         {messages.length > 0 && (
@@ -173,6 +188,10 @@ export default function Home() {
             </span>
           </p>
         )}
+
+        <button onClick={() => setVoiceMode(!voiceMode)}>
+          {!voiceMode ? <AudioLines /> : <CirclePauseIcon />}
+        </button>
 
         {messages.length === 0 && (
           <>
@@ -199,16 +218,18 @@ export default function Home() {
         )}
       </div>
 
-      <div
-        className={clsx(
-          "absolute size-36 blur-3xl rounded-full bg-gradient-to-b from-red-200 to-red-400 dark:from-red-600 dark:to-red-800 -z-50 transition ease-in-out",
-          {
-            "opacity-0": vad.loading || vad.errored,
-            "opacity-30": !vad.loading && !vad.errored && !vad.userSpeaking,
-            "opacity-100 scale-110": vad.userSpeaking,
-          }
-        )}
-      />
+      {voiceMode && (
+        <div
+          className={clsx(
+            "absolute size-36 blur-3xl rounded-full bg-gradient-to-b from-red-200 to-red-400 dark:from-red-600 dark:to-red-800 -z-50 transition ease-in-out",
+            {
+              "opacity-0": vad.loading || vad.errored,
+              "opacity-30": !vad.loading && !vad.errored && !vad.userSpeaking,
+              "opacity-100 scale-110": vad.userSpeaking,
+            }
+          )}
+        />
+      )}
     </>
   );
 }

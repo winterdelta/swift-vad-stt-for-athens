@@ -26,6 +26,12 @@ importers:
       groq-sdk:
         specifier: ^0.3.3
         version: 0.3.3
+      lucide:
+        specifier: ^0.447.0
+        version: 0.447.0
+      lucide-react:
+        specifier: ^0.447.0
+        version: 0.447.0(react@19.0.0-rc-100dfd7dab-20240701)
       next:
         specifier: 15.0.0-rc.0
         version: 15.0.0-rc.0(react-dom@19.0.0-rc-100dfd7dab-20240701(react@19.0.0-rc-100dfd7dab-20240701))(react@19.0.0-rc-100dfd7dab-20240701)
@@ -1285,6 +1291,14 @@ packages:
   lru-cache@10.2.2:
     resolution: {integrity: sha512-9hp3Vp2/hFQUiIwKo8XCeFVnrg8Pk3TYNPIR7tJADKi5YfcF7vEaK7avFHTlSy3kOKYaJQaalfEo6YuXdceBOQ==}
     engines: {node: 14 || >=16.14}
+
+  lucide-react@0.447.0:
+    resolution: {integrity: sha512-SZ//hQmvi+kDKrNepArVkYK7/jfeZ5uFNEnYmd45RKZcbGD78KLnrcNXmgeg6m+xNHFvTG+CblszXCy4n6DN4w==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0-rc
+
+  lucide@0.447.0:
+    resolution: {integrity: sha512-FDF5jUaT3WjGE8OUDRLoNJ9RiG9EpQZaYk454B4AJtDbzuI1Ss3wg4LyB7kp5oW9wg7X2HmMgsiwOJUw9HCQnA==}
 
   md5@2.3.0:
     resolution: {integrity: sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==}
@@ -3247,6 +3261,12 @@ snapshots:
       js-tokens: 4.0.0
 
   lru-cache@10.2.2: {}
+
+  lucide-react@0.447.0(react@19.0.0-rc-100dfd7dab-20240701):
+    dependencies:
+      react: 19.0.0-rc-100dfd7dab-20240701
+
+  lucide@0.447.0: {}
 
   md5@2.3.0:
     dependencies:
