@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   );
 
   const completion = await groq.chat.completions.create({
-    model: "openai/gpt-oss-20b",
+    model: "moonshotai/kimi-k2-instruct-0905",
     // TODO: model to test? newer? poss better? ... model: "llama-3.1-8b-instant",
     messages: [
       {
@@ -77,11 +77,15 @@ export async function POST(request: Request) {
       "X-API-Key": process.env.CARTESIA_API_KEY!,
     },
     body: JSON.stringify({
-      model_id: "sonic-english",
+      model_id: "sonic-3-2025-10-27",
       transcript: response,
       voice: {
         mode: "id",
-        id: "79a125e8-cd45-4c13-8a67-188112f4dd22",
+        // id: "79a125e8-cd45-4c13-8a67-188112f4dd22",
+        // id: "cc00e582-ed66-4004-8336-0175b85c85f6", // "Dana" voice
+        // id: "65b25c5d-ff07-4687-a04c-da2f43ef6fa9", // "French Narrator" lady
+        id: "b7d50908-b17c-442d-ad8d-810c63997ed9", // "Californian Women"
+        // id: "a01c369f-6d2d-4185-bc20-b32c225eab70", // "UK Female"
       },
       output_format: {
         container: "raw",
