@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   );
 
   const completion = await groq.chat.completions.create({
-    model: "llama-3.1-8b-instant",
+    model: "openai/gpt-oss-20b",
     // TODO: model to test? newer? poss better? ... model: "llama-3.1-8b-instant",
     messages: [
       {
@@ -137,7 +137,7 @@ async function getTranscript(input: string | File) {
   try {
     const { text } = await groq.audio.transcriptions.create({
       file: input,
-      model: "whisper-large-v3",
+      model: "whisper-large-v3-turbo",
     });
 
     return text.trim() || null;
