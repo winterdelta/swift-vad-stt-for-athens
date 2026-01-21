@@ -3,8 +3,11 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { unstable_after as after } from "next/server";
+import { createClient } from "@deepgram/sdk";
 
 const groq = new Groq();
+
+const deepgram = createClient(process.env.DEEPGRAM_API_KEY);
 
 const schema = zfd.formData({
   input: z.union([zfd.text(), zfd.file()]),
@@ -36,7 +39,6 @@ export async function POST(request: Request) {
 
   const completion = await groq.chat.completions.create({
     model: "moonshotai/kimi-k2-instruct-0905",
-    // TODO: model to test? newer? poss better? ... model: "llama-3.1-8b-instant",
     messages: [
       {
         role: "system",
@@ -48,8 +50,9 @@ export async function POST(request: Request) {
 			- Do not use markdown, emojis, or other formatting in your responses. Respond in a way easily spoken by text-to-speech software.
 			- User location is ${location()}.
 			- The current time is ${time()}.
-			- Your large language model is Llama 3, created by Meta, the 8 billion parameter version. It is hosted on Groq, an AI infrastructure company that builds fast inference technology.
+			- Your large language model is kimi-k2. It is hosted on Groq, an AI infrastructure company that builds fast inference technology.
 			- Your text-to-speech model is Sonic, created and hosted by Cartesia, a company that builds fast and realistic speech synthesis technology.
+      - Your transcription model is Nova 3, created and hosted by Deepgram.
 			- You are built with Next.js and hosted on Vercel.`,
       },
       ...data.message,
@@ -139,13 +142,31 @@ async function getTranscript(input: string | File) {
   if (typeof input === "string") return input;
 
   try {
-    const { text } = await groq.audio.transcriptions.create({
-      file: input,
-      model: "whisper-large-v3-turbo",
-    });
+    // const { text } = await groq.audio.transcriptions.create({
+    //   file: input,
+    //   model: "whisper-large-v3-turbo",
+    // });
+
+    // return text.trim() || null;
+
+    const buffer = Buffer.from(await input.arrayBuffer());
+
+    const { result, error } = await deepgram.listen.prerecorded.transcribeFile(
+      buffer,
+      {
+        mimetype: input.type || undefined,
+        model: "nova-3",
+        smart_format: true,
+      }
+    );
+
+    if (error) return null;
+
+    const text =
+      result?.results?.channels?.[0]?.alternatives?.[0]?.transcript ?? "";
 
     return text.trim() || null;
   } catch {
-    return null; // Empty audio file
+    return null;
   }
 }
