@@ -163,7 +163,6 @@ export default function Home() {
             onChange={(e) => setInput(e.target.value)}
             ref={inputRef}
           />
-
           <button
             type="submit"
             className="p-4 text-neutral-700 hover:text-black dark:text-neutral-300 dark:hover:text-white"

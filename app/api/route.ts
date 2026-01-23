@@ -38,7 +38,8 @@ export async function POST(request: Request) {
   );
 
   const completion = await groq.chat.completions.create({
-    model: "moonshotai/kimi-k2-instruct-0905",
+    // model: "moonshotai/kimi-k2-instruct-0905",
+    model: "openai/gpt-oss-20b",
     messages: [
       {
         role: "system",
@@ -53,7 +54,9 @@ export async function POST(request: Request) {
 			- Your large language model is kimi-k2. It is hosted on Groq, an AI infrastructure company that builds fast inference technology.
 			- Your text-to-speech model is Sonic, created and hosted by Cartesia, a company that builds fast and realistic speech synthesis technology.
       - Your transcription model is Nova 3, created and hosted by Deepgram.
-			- You are built with Next.js and hosted on Vercel.`,
+			- You are built with Next.js and hosted on Vercel.
+      - Keep your responses short, a few words or a short sentence, to keep the conversation fast.
+      `,
       },
       ...data.message,
       {
