@@ -18,7 +18,6 @@ type Message = {
 export default function Home() {
   const [input, setInput] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
-
   const [voiceMode, setVoiceMode] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
